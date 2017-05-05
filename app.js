@@ -6,6 +6,8 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
+// const bcrypt       = require('bcrypt');
+const session      = require('express-session');
 
 
 mongoose.connect('mongodb://localhost/passport-app');
@@ -27,6 +29,13 @@ app.use(bodyParser.urlencoded({ extended: false }));
 app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
+app.use(session({
+  secret: 'my cool passport app',
+
+  // these two options are there to prevent warnings
+  resave: true,
+  saveUninitialized: true
+}) );
 // -----------------------------------------------
 const index = require('./routes/index');
 app.use('/', index);
