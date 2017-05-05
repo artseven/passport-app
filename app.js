@@ -8,7 +8,9 @@ const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
 // const bcrypt       = require('bcrypt');
 const session      = require('express-session');
+const passport     = require('passport');
 
+const User         = require('./models/user-model.js');
 
 mongoose.connect('mongodb://localhost/passport-app');
 
@@ -36,6 +38,31 @@ app.use(session({
   resave: true,
   saveUninitialized: true
 }) );
+// These need to come AFTER the session middleware
+app.use(passport.initialize());
+app.use(passport.session());
+
+// Determines WHAT TO SAVE in the session(what to put in the box)
+// (called when you log in)
+passport.serializeUser((user, cb) => {
+  // cb is short for "callback"
+  cb(null, user._id);
+});
+
+// Where to get the rest of the user's information (given what's in the box)
+// (called on EVERY request AFTER you log in)
+passport.deserializeUser((userId, cb) => {
+  // Query the database with the ID from the box
+  User.findById(userId, (err, theUser) =>{
+    if (err) {
+      cb(err);
+      return;
+    }
+    // sending the user's info to passport
+    cb(null, theUser);
+  });
+});
+// Should always be BEFORE routes
 // -----------------------------------------------
 const index = require('./routes/index');
 app.use('/', index);
