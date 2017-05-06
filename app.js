@@ -42,6 +42,12 @@ app.use(session({
 app.use(passport.initialize());
 app.use(passport.session());
 
+// PASSPORT GOES THROUGH THIS
+// 1. Our form
+// 2. LocalStrategy callback
+// 3.(if successful) passport.serializeUser()
+//
+
 // Determines WHAT TO SAVE in the session(what to put in the box)
 // (called when you log in)
 passport.serializeUser((user, cb) => {
@@ -71,7 +77,13 @@ const LocalStrategy = require ('passport-local').Strategy;
 
 passport.use(new LocalStrategy(
   // 1st arg -> options to customize LocalStrategy
-  { },
+  {
+    // <input name="loginUsername">
+    usernameField: 'loginUsername',
+    // <input name="loginPassword">
+    passwordField: 'loginPassword'
+  },
+
   // 2nd arg -> callback for the logic that validates the login
   (loginUsername, loginPassword, next) =>{
     User.findOne(
@@ -91,12 +103,13 @@ passport.use(new LocalStrategy(
           }
           // Tell passport if the passwords don't match
           if (!bcrypt.compareSync(loginPassword, theUser.encryptedPassword)) {
-            // false means "Log in failse!"
+            // false means "Log in failed!"
             next(null, false);
             return;
           }
           // Give passport the user's details
           next(null, theUser);
+          //  -> this user goes to passport.serializeUser()
         }
     );
   }
