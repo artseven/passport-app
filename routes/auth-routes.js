@@ -1,5 +1,6 @@
-const express = require('express');
-const bcrypt  = require('bcrypt');
+const express  = require('express');
+const bcrypt   = require('bcrypt');
+const passport = require('passport');
 
 const User    = require('../models/user-model.js');
 
@@ -68,5 +69,19 @@ authRoutes.post('/signup', (req, res, next) =>{
 authRoutes.get('/login', (req, res, next) => {
   res.render('auth/login-view.ejs');
 });
+// <form method="post" action="/login">
+authRoutes.post('/login',
+  passport.authenticate('local', {
+    successRedirect: '/',
+    failureRedirect: '/login'
+  } )
+);
+
+authRoutes.get('/logout', (req, res, next) => {
+  // req.logout() method provided by Passport
+  req.logout();
+  res.redirect('/');
+});
+
 
 module.exports = authRoutes;

@@ -115,6 +115,16 @@ passport.use(new LocalStrategy(
   }
 ) );
 // Should always be BEFORE routes
+// Middleware that sets the user variable for all views
+// Only if logged in
+//  user: req.user for all renders
+// Also after passport middleware
+app.use((req, res, next) => {
+  if (req.user) {
+    res.locals.user = req.user;
+  }
+  next();
+});
 // -----------------------------------------------
 const index = require('./routes/index');
 app.use('/', index);
