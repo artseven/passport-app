@@ -131,6 +131,9 @@ app.use('/', index);
 
 const myAuthRoutes = require('./routes/auth-routes.js');
 app.use('/', myAuthRoutes);
+
+const myUserRoutes = require('./routes/user-routes.js');
+app.use('/', myUserRoutes);
 // ------------------------------------------------
 // catch 404 and forward to error handler
 app.use((req, res, next) => {

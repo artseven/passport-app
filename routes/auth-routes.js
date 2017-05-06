@@ -8,6 +8,11 @@ const User    = require('../models/user-model.js');
 const authRoutes = express.Router();
 
 authRoutes.get('/signup', (req, res, next) => {
+  // If logged in already, redirects to home page
+  // if (req.user) {
+  //   res.redirect('/');
+  //   return;
+  // }
   res.render('auth/signup-view.ejs');
 });
 
