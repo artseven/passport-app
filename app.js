@@ -6,11 +6,11 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
-// const bcrypt       = require('bcrypt');
+const bcrypt       = require('bcrypt');
 const session      = require('express-session');
 const passport     = require('passport');
 
-const User         = require('./models/user-model.js');
+
 
 mongoose.connect('mongodb://localhost/passport-app');
 
@@ -49,6 +49,8 @@ passport.serializeUser((user, cb) => {
   cb(null, user._id);
 });
 
+const User = require('./models/user-model.js');
+
 // Where to get the rest of the user's information (given what's in the box)
 // (called on EVERY request AFTER you log in)
 passport.deserializeUser((userId, cb) => {
@@ -62,6 +64,43 @@ passport.deserializeUser((userId, cb) => {
     cb(null, theUser);
   });
 });
+// const passportLocal = require('passport-local');
+// const LocalStrategy = passportLocal.Strategy;
+// SAME ||
+const LocalStrategy = require ('passport-local').Strategy;
+
+passport.use(new LocalStrategy(
+  // 1st arg -> options to customize LocalStrategy
+  { },
+  // 2nd arg -> callback for the logic that validates the login
+  (loginUsername, loginPassword, next) =>{
+    User.findOne(
+      { username: loginUsername},
+        (err, theUser) => {
+          //  Tell passport if there was an error(nothing we can do)
+          if (err) {
+           next(err);
+           return;
+          }
+          // Tell passport if there is no user with given username
+          if(!theUser) {
+          //          false in 2nd arg means "Log in failed!"
+          //            |
+           next(null, false);
+           return;
+          }
+          // Tell passport if the passwords don't match
+          if (!bcrypt.compareSync(loginPassword, theUser.encryptedPassword)) {
+            // false means "Log in failse!"
+            next(null, false);
+            return;
+          }
+          // Give passport the user's details
+          next(null, theUser);
+        }
+    );
+  }
+) );
 // Should always be BEFORE routes
 // -----------------------------------------------
 const index = require('./routes/index');

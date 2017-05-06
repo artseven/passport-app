@@ -36,7 +36,7 @@ authRoutes.post('/signup', (req, res, next) =>{
       // Don't let the user register if the username is taken
       if (foundUser) {
         res.render('auth/signup-view.ejs', {
-          errorMessage: 'Username is taken, sir or madam'
+          errorMessage: 'Username is taken'
         });
         return;
       }
