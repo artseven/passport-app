@@ -3,7 +3,6 @@ const ensure  = require('connect-ensure-login');
 
 const routerThingy = express.Router();
 
-ensure.ensureLoggedIn();
 
 // routerThingy.get('/user/:id/edit', (req, res, next) => {
 routerThingy.get('/profile/edit',

@@ -32,8 +32,13 @@ app.use(cookieParser());
 app.use(express.static(path.join(__dirname, 'public')));
 app.use(layouts);
 app.use(session({
-  secret: 'my cool passport app',
-
+  key: "ArtKey",
+  secret: 'ArtSecret',
+  cookie:
+  {
+    maxAge: 10000,
+    // path: '/'
+  },
   // these two options are there to prevent warnings
   resave: true,
   saveUninitialized: true

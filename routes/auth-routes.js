@@ -1,13 +1,18 @@
 const express  = require('express');
 const bcrypt   = require('bcrypt');
 const passport = require('passport');
+const ensure = require('connect-ensure-login');
 
 const User    = require('../models/user-model.js');
 
 
 const authRoutes = express.Router();
 
-authRoutes.get('/signup', (req, res, next) => {
+authRoutes.get('/signup',
+  //           redirect to '/' if you ARE logged in"
+  ensure.ensureNotLoggedIn('/'),
+
+ (req, res, next) => {
   // If logged in already, redirects to home page
   // if (req.user) {
   //   res.redirect('/');
@@ -69,7 +74,8 @@ authRoutes.post('/signup', (req, res, next) =>{
       });
     }
   );
-});
+}
+);
 
 authRoutes.get('/login', (req, res, next) => {
   res.render('auth/login-view.ejs');
