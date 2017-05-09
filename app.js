@@ -9,6 +9,7 @@ const mongoose     = require('mongoose');
 const bcrypt       = require('bcrypt');
 const session      = require('express-session');
 const passport     = require('passport');
+const flash        = require('connect-flash');
 
 
 
@@ -36,13 +37,17 @@ app.use(session({
   secret: 'ArtSecret',
   cookie:
   {
-    maxAge: 10000,
+    maxAge: 100000,
     // path: '/'
   },
   // these two options are there to prevent warnings
   resave: true,
   saveUninitialized: true
 }) );
+
+app.use(flash());
+
+
 // These need to come AFTER the session middleware
 app.use(passport.initialize());
 app.use(passport.session());

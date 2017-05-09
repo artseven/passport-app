@@ -11,7 +11,9 @@ router.get('/', (req, res, next) => {
   console.log('USER (from Passport)', req.user);
   // created by Passport
   // Render a completely
-  res.render('index');
+  res.render('index', {
+    successMessage: req.flash('successfulSignup')
+  });
 });
 
 module.exports = router;
