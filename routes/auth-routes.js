@@ -72,7 +72,7 @@ authRoutes.post('/signup', (req, res, next) =>{
         // store a message in the box to display after the redirect
         req.flash(
           // 1st arg -> key of the message
-          'successfulSignup',
+          'success',
           // 2nd arg -> the actual message
           'You have registered successfully!'
         );
@@ -86,19 +86,26 @@ authRoutes.post('/signup', (req, res, next) =>{
 );
 
 authRoutes.get('/login', (req, res, next) => {
-  res.render('auth/login-view.ejs');
+  res.render('auth/login-view.ejs', {
+    errorMessage: req.flash('error')
+    //      default name for error messages in Passport
+  });
 });
 // <form method="post" action="/login">
 authRoutes.post('/login',
   passport.authenticate('local', {
     successRedirect: '/',
-    failureRedirect: '/login'
+    successFlash: true,    //req.flash('success')
+    failureRedirect: '/login',
+    falureFlash: true
   } )
 );
 
 authRoutes.get('/logout', (req, res, next) => {
   // req.logout() method provided by Passport
   req.logout();
+
+  req.flash('success', 'You have logged out successfully');
   res.redirect('/');
 });
 

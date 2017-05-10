@@ -108,17 +108,17 @@ passport.use(new LocalStrategy(
           if(!theUser) {
           //          false in 2nd arg means "Log in failed!"
           //            |
-           next(null, false);
+           next(null, false, { message: 'Wrong username'});
            return;
           }
           // Tell passport if the passwords don't match
           if (!bcrypt.compareSync(loginPassword, theUser.encryptedPassword)) {
             // false means "Log in failed!"
-            next(null, false);
+            next(null, false, { message: 'Wrong password'});
             return;
           }
           // Give passport the user's details
-          next(null, theUser);
+          next(null, theUser, { message: `Login for ${theUser.username} successful`});
           //  -> this user goes to passport.serializeUser()
         }
     );

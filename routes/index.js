@@ -12,8 +12,10 @@ router.get('/', (req, res, next) => {
   // created by Passport
   // Render a completely
   res.render('index', {
-    successMessage: req.flash('successfulSignup')
-  });
+    successMessage: req.flash('success'),
+    // passportSuccess: req.flash('success')
+    //                             |
+  }); //        default success message key from passport
 });
 
 module.exports = router;

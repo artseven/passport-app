@@ -1,5 +1,9 @@
 <h2> Log In </h2>
 
+<% if (errorMessage.length > 0) { %>
+  <div class="error"> <%= errorMessage %> </div>
+<% } %>
+<br>
 <form method="post" action="/login">
   <label for="username-input"> Account name </label>
   <!-- has to match with        usernameField: 'loginUsername' -->
