@@ -1,6 +1,14 @@
 <h2> Edit Your Profile </h2>
 
-<form method="post" action="/we-skipped-over-the-post">
+<% if (typeof successMessage !== 'undefined' && successMessage.length > 0) { %>
+  <div class="success"> <%= successMessage %> </div>
+<% } %>
+
+<% if (typeof errorMessage !== 'undefined') { %>
+  <div class="error"> <%= errorMessage %> </div>
+<% } %>
+<br>
+<form method="post" action="/profile/edit">
   <label for="name-input"> Your Name </label>
   <input  id="name-input" type="text"
     name="profileName" value="<%= user.name %>">

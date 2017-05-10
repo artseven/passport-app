@@ -21,7 +21,10 @@ authRoutes.get('/signup',
   res.render('auth/signup-view.ejs');
 });
 
-authRoutes.post('/signup', (req, res, next) =>{
+authRoutes.post('/signup',
+  ensure.ensureNotLoggedIn('/'),
+  
+ (req, res, next) =>{
   const signupUsername = req.body.signupUsername;
   const signupPassword = req.body.signupPassword;
 
@@ -97,7 +100,7 @@ authRoutes.post('/login',
     successRedirect: '/',
     successFlash: true,    //req.flash('success')
     failureRedirect: '/login',
-    falureFlash: true
+    failureFlash: true
   } )
 );
 
