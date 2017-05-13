@@ -6,12 +6,14 @@ const cookieParser = require('cookie-parser');
 const bodyParser   = require('body-parser');
 const layouts      = require('express-ejs-layouts');
 const mongoose     = require('mongoose');
-const bcrypt       = require('bcrypt');
 const session      = require('express-session');
 const passport     = require('passport');
+const bcrypt       = require('bcrypt');
 const flash        = require('connect-flash');
 
-
+// Tell node to run the code contained in this file
+// (this sets up passport and our strategies)
+require('./config/passport-config.js');
 
 mongoose.connect('mongodb://localhost/passport-app');
 
@@ -37,7 +39,7 @@ app.use(session({
   secret: 'ArtSecret',
   cookie:
   {
-    maxAge: 100000,
+    maxAge: 1000000,
     // path: '/'
   },
   // these two options are there to prevent warnings
@@ -56,76 +58,10 @@ app.use(passport.session());
 // 1. Our form
 // 2. LocalStrategy callback
 // 3.(if successful) passport.serializeUser()
-//
+const FbStrategy = require('passport-facebook').Strategy;
+const GoogleStrategy = require('passport-google-oauth').OAuth2Strategy;
+const LocalStrategy = require('passport-local').Strategy;
 
-// Determines WHAT TO SAVE in the session(what to put in the box)
-// (called when you log in)
-passport.serializeUser((user, cb) => {
-  // cb is short for "callback"
-  cb(null, user._id);
-});
-
-const User = require('./models/user-model.js');
-
-// Where to get the rest of the user's information (given what's in the box)
-// (called on EVERY request AFTER you log in)
-passport.deserializeUser((userId, cb) => {
-  // Query the database with the ID from the box
-  User.findById(userId, (err, theUser) =>{
-    if (err) {
-      cb(err);
-      return;
-    }
-    // sending the user's info to passport
-    cb(null, theUser);
-  });
-});
-// const passportLocal = require('passport-local');
-// const LocalStrategy = passportLocal.Strategy;
-// SAME ||
-const LocalStrategy = require ('passport-local').Strategy;
-
-passport.use(new LocalStrategy(
-  // 1st arg -> options to customize LocalStrategy
-  {
-    // <input name="loginUsername">
-    usernameField: 'loginUsername',
-    // <input name="loginPassword">
-    passwordField: 'loginPassword'
-  },
-
-  // 2nd arg -> callback for the logic that validates the login
-  (loginUsername, loginPassword, next) =>{
-    User.findOne(
-      { username: loginUsername},
-        (err, theUser) => {
-          //  Tell passport if there was an error(nothing we can do)
-          if (err) {
-           next(err);
-           return;
-          }
-          // Tell passport if there is no user with given username
-          if(!theUser) {
-          //          false in 2nd arg means "Log in failed!"
-          //            |
-           next(null, false, { message: 'Wrong username'});
-           return;
-          }
-          // Tell passport if the passwords don't match
-          if (!bcrypt.compareSync(loginPassword, theUser.encryptedPassword)) {
-            // false means "Log in failed!"
-            next(null, false, { message: 'Wrong password'});
-            return;
-          }
-          // Give passport the user's details
-          next(null, theUser, { message: `Login for ${theUser.username} successful`});
-          //  -> this user goes to passport.serializeUser()
-        }
-    );
-  }
-) );
-// Should always be BEFORE routes
-// Middleware that sets the user variable for all views
 // Only if logged in
 //  user: req.user for all renders
 // Also after passport middleware
@@ -144,6 +80,9 @@ app.use('/', myAuthRoutes);
 
 const myUserRoutes = require('./routes/user-routes.js');
 app.use('/', myUserRoutes);
+
+const myRoomRoutes = require('./routes/room-routes.js');
+app.use('/', myRoomRoutes);
 // ------------------------------------------------
 // catch 404 and forward to error handler
 app.use((req, res, next) => {
