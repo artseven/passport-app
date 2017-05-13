@@ -1,2 +1,8 @@
+#Shouldn't commit node modules
 node_modules
+
+# Ignore uploaded files
 public/uploads
+
+#Ignore development environment variables
+.env

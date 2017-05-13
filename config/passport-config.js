@@ -32,7 +32,8 @@ passport.deserializeUser((userId, cb) => {
 
 passport.use( new FbStrategy (
   {
-
+    clientID: process.env.FB_APP_ID,
+    clientSecret: process.env.FB_APP_SECRET,
     callbackURL:'/auth/facebook/callback'
   },            // address for a route in our app
   (accessToken, refreshToken, profile, done) => {
@@ -73,7 +74,8 @@ passport.use( new FbStrategy (
 
 passport.use( new GoogleStrategy(
   {
-
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_SECRET,
     callbackURL: '/auth/google/callback'
   },
   (accessToken, refreshToken, profile, done) => {
