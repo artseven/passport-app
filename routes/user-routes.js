@@ -113,7 +113,7 @@ routerThingy.post('/profile/edit',
 
 
 routerThingy.get('/users', (req, res, next) => {
-  if (req.user.role !== 'admin') {
+  if (! req.user || req.user.role !== 'admin') {
     // Show 404 page
     next();
     return;
@@ -126,8 +126,34 @@ routerThingy.get('/users', (req, res, next) => {
     }
 
     res.render('user/users-list-view.ejs', {
-      user: usersList
+      users: usersList,
+      successMessage: req.flash('success')
     });
   });
 });
+
+routerThingy.post('/users/:id/admin', (req, res, next) => {
+  if (!req.user || req.user.role !== 'admin') {
+    // show 404
+    next();
+    return;
+  }
+
+  User.findByIdAndUpdate(
+    req.params.id,
+    { role: 'admin'},
+    (err, theUser) => {
+      if (err) {
+        next(err);
+        return;
+      }
+      req.flash('success', `User "${theUser.name}" is now an admin`);
+
+      res.redirect('/users');
+
+    }
+  );
+});
+
+
 module.exports = routerThingy;

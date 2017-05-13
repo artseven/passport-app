@@ -1,0 +1,23 @@
+<h2> All Users </h2>
+
+<% if (successMessage.length > 0) { %>
+  <div class='success'>Upgraded succesfully</div>
+
+<% } %>
+
+<ul>
+  <% users.forEach((oneUser) => { %>
+    <li>
+      <h3> Name: <%= oneUser.name %> </h3>
+      <p> Role: <%= oneUser.role %></h3>
+      <p> Username: <%= oneUser.username %> </p>
+      <p> facebookID: <%= oneUser.facebookID %> </p>
+      <p> googleID: <%= oneUser.googleID %> </p>
+      <% if (oneUser.role !== 'admin') { %>
+      <form method="post" action="/users/<%= oneUser._id %>/admin">
+        <button> Upgrade </button>
+      </form>
+      <% } %>
+    </li>
+  <% })  %>
+</ul>

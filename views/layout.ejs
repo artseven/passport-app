@@ -15,7 +15,11 @@
       <ul>
         <li><a href="/"> Home </a></li><br>
 
+
       <%  if (typeof user !== 'undefined') { %>
+        <% if (user.role === 'admin') { %>
+             <li> <a href="/users"> Manage Users </a> </li>
+           <% } %>
         <li><a href="/rooms"> Your rooms </a></li><br>
         <li><a href="/profile/edit"> Edit Profile </a></li><br>
         <li><a href="/logout"> Log Out </a></li><br>
