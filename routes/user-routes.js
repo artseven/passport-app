@@ -111,4 +111,23 @@ routerThingy.post('/profile/edit',
   }
 );
 
+
+routerThingy.get('/users', (req, res, next) => {
+  if (req.user.role !== 'admin') {
+    // Show 404 page
+    next();
+    return;
+  }
+
+  User.find((err, usersList) => {
+    if (err) {
+      next(err);
+      return;
+    }
+
+    res.render('user/users-list-view.ejs', {
+      user: usersList
+    });
+  });
+});
 module.exports = routerThingy;
